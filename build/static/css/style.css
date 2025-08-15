@@ -1,0 +1,9 @@
+/* static/css/style.css */
+body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+header { border-bottom: 1px solid #ccc; margin-bottom: 20px; }
+nav a { margin-right: 10px; }
+main { min-height: 400px; }
+footer { border-top: 1px solid #ccc; margin-top: 20px; padding-top: 10px; text-align: center; }
+.article-body img { max-width: 100%; height: auto; }
+ul { list-style-type: none; padding: 0; }
+li { margin-bottom: 10px; }

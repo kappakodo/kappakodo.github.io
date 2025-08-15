@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Reviews</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/news/">News</a>
+            <a href="/reviews/">Reviews</a>
+        </nav>
+    </header>
+    <main>
+        <h2>All Reviews</h2>
+        <div id="article-content-placeholder"></div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Your Name</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/lib/marked.min.js"></script>
+    <script>
+        async function loadReviews() {
+            const url = './compressed/reviews_manifest.json'; // Internal path
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to load reviews');
+                const posts = await response.json();
+                const list = document.getElementById('article-content-placeholder');
+                list.innerHTML = '<ul>' + posts.map(p => `
+                    <li>
+                        <a href="/reviews/${p.id}">${p.title}</a> 
+                        (${new Date(p.date).toLocaleDateString()})
+                    </li>
+                `).join('') + '</ul>';
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('article-content-placeholder').innerHTML = '<p>Failed to load reviews</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadReviews);
+    </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/lib/marked.min.js"></script>
+</head>
+<body>
+    <div id="content">Loading...</div>
+    <script>
+        async function loadAndRender() {
+            try {
+                // Parse URL (e.g., /news/abc123def456)
+                const path = window.location.pathname;
+                const parts = path.split('/').filter(p => p);
+                if (parts.length !== 2 || !['news', 'reviews'].includes(parts[0])) {
+                    throw new Error('Invalid article URL');
+                }
+                
+                const [category, articleId] = parts;
+                const templateUrl = `./${category}.html`; // Load news.html or review.html
+                const jsonUrl = `./compressed/${category}/${articleId}.json`; // Internal path
+
+                // Fetch template
+                const templateResponse = await fetch(templateUrl);
+                if (!templateResponse.ok) throw new Error('Failed to load template');
+                const templateHtml = await templateResponse.text();
+                console.log(templateHtml);
+                // Set template HTML (preserves URL)
+                document.getElementById('content').innerHTML = templateHtml;
+
+                // Fetch article JSON
+                const articleResponse = await fetch(jsonUrl);
+                if (!articleResponse.ok) throw new Error('Article not found');
+                const data = await articleResponse.json();
+
+                // Render article
+                document.title = data.metadata.title;
+                const placeholder = document.getElementById('article-content-placeholder');
+                if (placeholder) {
+                    placeholder.innerHTML = `
+                        <article>
+                            <h1>${data.metadata.title}</h1>
+                            <p><em>Author: ${data.metadata.author || 'Unknown'}</em> | 
+                               <time datetime="${data.metadata.date}">${new Date(data.metadata.date).toLocaleDateString()}</time></p>
+                            <hr>
+                            <div class="article-body">${marked.parse(data.content_md)}</div>
+                        </article>
+                    `;
+                } else {
+                    throw new Error('Template missing placeholder');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.title = '404 - Not Found';
+                document.getElementById('content').innerHTML = `
+                    <main>
+                        <h1>404 - Not Found</h1>
+                        <p>${error.message}</p>
+                    </main>
+                `;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadAndRender);
+    </script>
+</body>
+</html>

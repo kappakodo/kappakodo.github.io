@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Blog</h1>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/news/">News</a>
+            <a href="/reviews/">Reviews</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Latest Posts</h2>
+        <div id="article-content-placeholder"></div>
+    </main>
+    <footer>
+        <p>&copy; 2025 Your Name</p>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/lib/marked.min.js"></script>
+    <script>
+        async function loadLatest() {
+            const url = '/compressed/latest_manifest.json'; // Internal path
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Failed to load latest posts');
+                const posts = await response.json();
+                const list = document.getElementById('article-content-placeholder');
+                list.innerHTML = '<ul>' + posts.map(p => `
+                    <li>
+                        <a href="/${p.category}/${p.id}">${p.title}</a> 
+                        (${p.category}, ${new Date(p.date).toLocaleDateString()})
+                    </li>
+                `).join('') + '</ul>';
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('article-content-placeholder').innerHTML = '<p>Failed to load posts</p>';
+            }
+        }
+        document.addEventListener('DOMContentLoaded', loadLatest);
+    </script>
+</body>
+</html>
