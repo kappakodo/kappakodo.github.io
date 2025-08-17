@@ -25,7 +25,7 @@
     <script src="https://cdn.jsdelivr.net/npm/marked@4.0.0/lib/marked.min.js"></script>
     <script>
         async function loadLatest() {
-            const url = './compressed/latest_manifest.json'; // Internal path
+            const url = `https://cdn.jsdelivr.net/gh/kappakodo/content@main/compressed/latest_manifest.json`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) throw new Error('Failed to load latest posts');
