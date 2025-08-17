@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,8 +20,7 @@
                 }
                 
                 const [category, articleId] = parts;
-                const templateUrl = `./${category}.html`; // Load news.html or review.html
-
+                const templateUrl = `https://cdn.jsdelivr.net/gh/kappakodo/content@main/templates/${category}.html`;
                 const jsonUrl = `https://cdn.jsdelivr.net/gh/kappakodo/content@main/compressed/${category}/${articleId}.json`;
 
                 // Fetch template
